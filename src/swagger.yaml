@@ -1,0 +1,12 @@
+openapi: 3.0.3
+
+info:
+  title: CIS API Reference
+  description: |-
+    This is a sample CIS API based on the OpenAPI 3.0 specification.
+  version: 1.0.0
+
+security:
+  - BearerAuth: [ ]
+
+paths:
