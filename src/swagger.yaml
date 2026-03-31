@@ -7,6 +7,117 @@ info:
   version: 1.0.0
 
 security:
-  - BearerAuth: [ ]
+  - BearerAuth: []
 
 paths:
+  /api/v1/topics:
+    get:
+      summary: Read All Topics
+      description: Returns a list of all topics.
+      operationId: getAllTopics
+      responses:
+        '200':
+          description: 200 Ok
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/TopicResponse'
+              examples:
+                emptyArray:
+                  summary: Empty array
+                  value: []
+                nonEmptyArray:
+                  summary: Non Empty array
+                  value:
+                    - id: "4e542f0d-f9ff-47c3-88e2-90f6e82b0ac9"
+                      name: "topic 1"
+                      description: "topic 1"
+                      totalIdeasCount: 0
+                      createdAt: "2026-03-25 14:00:00"
+                      createdBy:
+                        id: "4e542f0d-f9ff-47c3-88e2-90f6e82b0ac9"
+                        name: "javier"
+                        login: "jroca"
+    post:
+      summary: Create a New Topic
+      description: Creates a new topic. Requires Bearer Token authorization.
+      operationId: createTopic
+      requestBody:
+        description: Request body to create a new topic
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TopicCreateRequest'
+      responses:
+        '201':
+          description: Created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TopicResponse'
+        '400':
+          description: Bad Request. Returned if Name or Description values are null or empty.
+
+components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  schemas:
+    TopicCreateRequest:
+      type: object
+      required:
+        - name
+        - description
+      properties:
+        name:
+          type: string
+          minLength: 1
+          description: The name of the topic. Cannot be empty.
+          example: "topic 1"
+        description:
+          type: string
+          minLength: 1
+          description: The description of the topic. Cannot be empty.
+          example: "topic 1"
+
+    TopicResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          example: "4e542f0d-f9ff-47c3-88e2-90f6e82b0ac9"
+        name:
+          type: string
+          example: "topic 1"
+        description:
+          type: string
+          example: "topic 1"
+        totalIdeasCount:
+          type: integer
+          example: 0
+        createdAt:
+          type: string
+          example: "2026-03-25 14:00:00"
+        createdBy:
+          $ref: '#/components/schemas/UserShortInfo'
+
+    UserShortInfo:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          example: "4e542f0d-f9ff-47c3-88e2-90f6e82b0ac9"
+        name:
+          type: string
+          example: "javier"
+        login:
+          type: string
+          example: "jroca"
